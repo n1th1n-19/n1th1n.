@@ -8,6 +8,7 @@ const LINKS = [
   { id: "work", label: "Work" },
   { id: "about", label: "About" },
   { id: "now", label: "Now" },
+  { id: "news", label: "News" },
   { id: "activity", label: "Activity" },
   { id: "contact", label: "Contact" },
 ];
@@ -38,8 +39,8 @@ export function Nav() {
     return () => io.disconnect();
   }, []);
 
-  // Activity has no tab of its own on phones; it lives under Now.
-  const tab = TABS.findIndex((t) => t.id === (active === "activity" ? "now" : active));
+  // News and Activity have no tab of their own on phones; they live under Now.
+  const tab = TABS.findIndex((t) => t.id === (active === "activity" || active === "news" ? "now" : active));
 
   return (
     <>

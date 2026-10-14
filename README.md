@@ -44,6 +44,7 @@ echo "GITHUB_TOKEN=$(gh auth token)" > .env.local
 
 - **Projects:** [`lib/projects.ts`](lib/projects.ts) holds name, tagline, status, notes and links for every project. Change a project's `status` there when it ships or pauses. `fallback` values are used when GitHub can't be reached.
 - **Icons:** [`public/icons/`](public/icons/) contains one 256px PNG per project.
+- **News:** [`lib/updates.ts`](lib/updates.ts) holds the updates timeline, newest first. Add an entry at the top and push; the page and the RSS feed at `/feed.xml` both use it.
 - **Hero spotlight:** `spotlight()` at the bottom of `lib/projects.ts` picks the project shown in the "Now building" pill.
 - **Name, email, links:** [`lib/site.ts`](lib/site.ts).
 - **Offline activity data:** [`lib/activity-fallback.json`](lib/activity-fallback.json) holds daily commit counts from the local repos, used when GitHub data is missing (for example, the private Daybloom repo).
@@ -56,10 +57,12 @@ app/
   layout.tsx             fonts, metadata, viewport
   globals.css            all styles
   opengraph-image.tsx    share image
+  feed.xml/route.ts      RSS feed of lib/updates.ts
   sitemap.ts, robots.ts, icon.svg
 components/
   Nav.tsx                glass navbar (desktop) and tab bar (mobile)
   Work.tsx               project cards and filter chips
+  News.tsx               updates timeline
   Heatmap.tsx            contribution graph
   CountUp.tsx, CopyEmail.tsx, RelativeTime.tsx, AppIcon.tsx, icons.tsx
 lib/

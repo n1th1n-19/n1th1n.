@@ -13,6 +13,7 @@ import { RelativeTime } from "@/components/RelativeTime";
 import { Chevron } from "@/components/icons";
 import { FlexHeadline } from "@/components/FlexHeadline";
 import { Words } from "@/components/Words";
+import { News } from "@/components/News";
 
 // Per-icon parallax depth and intro tilt, so the row doesn't move as one block.
 const DEPTH = [40, 70, 25, 60, 35, 80, 30, 55];
@@ -216,8 +217,22 @@ export default async function Page() {
           </ul>
         </section>
 
+        <section id="news" className="section wrap news-section" aria-labelledby="news-h">
+          <header className="news-head">
+            <p className="eyebrow">04 / News</p>
+            <h2 id="news-h" className="split">
+              <Words text="Updates" />
+            </h2>
+            <p className="news-intro">Releases, milestones and status changes, newest first.</p>
+            <a href="/feed.xml" className="link">
+              Follow via RSS <Chevron />
+            </a>
+          </header>
+          <News />
+        </section>
+
         <section id="activity" className="section section-tight wrap" aria-labelledby="activity-h">
-          <p className="eyebrow">04 / Activity</p>
+          <p className="eyebrow">05 / Activity</p>
           <div className="sec-head">
             <h2 id="activity-h">
               {commits.toLocaleString("en-US")} {unit} <span className="dim">this year</span>
@@ -234,7 +249,7 @@ export default async function Page() {
         </section>
 
         <section id="contact" className="section wrap contact" aria-labelledby="contact-h">
-          <p className="eyebrow">05 / Contact</p>
+          <p className="eyebrow">06 / Contact</p>
           <FlexHeadline
             as="h2"
             id="contact-h"
