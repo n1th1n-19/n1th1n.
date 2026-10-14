@@ -175,7 +175,7 @@ export default async function Page() {
               </div>
               <div>
                 <dt>Platforms</dt>
-                <dd>Android, VS Code, browsers, Linux</dd>
+                <dd>Android, VSCodium, browsers, Linux</dd>
               </div>
               <div>
                 <dt>Tools</dt>
