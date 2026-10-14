@@ -1,6 +1,7 @@
 import { cacheLife } from "next/cache";
 import { projects } from "./projects";
 import fallbackActivity from "./activity-fallback.json";
+import { HANDLE } from "./site";
 
 const headers: HeadersInit = {
   Accept: "application/vnd.github+json",
@@ -20,12 +21,46 @@ async function gh<T>(path: string): Promise<T | null> {
 
 type Commit = { commit: { committer: { date: string } } };
 
+const LEVEL = { NONE: 0, FIRST_QUARTILE: 1, SECOND_QUARTILE: 2, THIRD_QUARTILE: 3, FOURTH_QUARTILE: 4 } as const;
+type Day = { date: string; contributionCount: number; contributionLevel: keyof typeof LEVEL };
+
+// The whole GitHub contribution graph (every repo, private ones included when the profile shows them).
+// GraphQL always needs a token, so without GITHUB_TOKEN this returns null and the page uses project commits.
+async function calendar() {
+  if (!process.env.GITHUB_TOKEN) return null;
+  try {
+    const res = await fetch("https://api.github.com/graphql", {
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        query: `query($login: String!) { user(login: $login) { contributionsCollection { contributionCalendar {
+          totalContributions weeks { contributionDays { date contributionCount contributionLevel } } } } } }`,
+        variables: { login: HANDLE },
+      }),
+    });
+    const json = await res.json();
+    const cal = json?.data?.user?.contributionsCollection?.contributionCalendar;
+    if (!res.ok || !cal) return null;
+    const days: Record<string, number> = {};
+    const levels: Record<string, number> = {};
+    for (const w of cal.weeks) for (const d of w.contributionDays as Day[]) {
+      days[d.date] = d.contributionCount;
+      levels[d.date] = LEVEL[d.contributionLevel] ?? 0;
+    }
+    return { days, levels, total: cal.totalContributions as number };
+  } catch {
+    return null;
+  }
+}
+
 export async function getBoard() {
   "use cache";
   cacheLife("hours");
 
   const checkedAt = new Date().toISOString();
   const since = new Date(Date.now() - 371 * 864e5).toISOString();
+
+  const pending = calendar(); // runs alongside the per-project requests
 
   const rows = await Promise.all(
     projects.map(async (p) => {
@@ -59,7 +94,7 @@ export async function getBoard() {
     }),
   );
 
-  return { rows, checkedAt };
+  return { rows, checkedAt, contributions: await pending };
 }
 
 export type Row = Awaited<ReturnType<typeof getBoard>>["rows"][number];

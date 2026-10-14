@@ -16,12 +16,16 @@ import { Chevron } from "@/components/icons";
 const DEPTH = [40, 70, 25, 60, 35, 80, 30, 55];
 
 export default async function Page() {
-  const { rows, checkedAt } = await getBoard();
+  const { rows, checkedAt, contributions } = await getBoard();
   const live = spotlight(rows);
-  const days = sumDays(rows.map((r) => r.days));
-  const commits = weeks(checkedAt)
-    .flat()
-    .reduce((n, d) => n + (d ? (days[d] ?? 0) : 0), 0);
+  // Whole GitHub profile when a token is set, otherwise commits to the projects listed here.
+  const days = contributions?.days ?? sumDays(rows.map((r) => r.days));
+  const unit = contributions ? "contributions" : "commits";
+  const commits =
+    contributions?.total ??
+    weeks(checkedAt)
+      .flat()
+      .reduce((n, d) => n + (d ? (days[d] ?? 0) : 0), 0);
   const shipped = rows.filter((r) => r.status === "shipped").length;
   const languages = new Set(rows.map((r) => r.language)).size;
 
@@ -115,7 +119,7 @@ export default async function Page() {
           {[
             [rows.length, "Projects"],
             [shipped, "Shipped to users"],
-            [commits, "Commits this year"],
+            [commits, unit === "commits" ? "Commits this year" : "Contributions this year"],
             [languages, "Languages"],
           ].map(([v, l], i) => (
             <div key={l} className="stat reveal" style={{ "--i": i } as CSSProperties}>
@@ -203,7 +207,7 @@ export default async function Page() {
           <p className="eyebrow">04 / Activity</p>
           <div className="sec-head">
             <h2 id="activity-h">
-              {commits} commits <span className="dim">this year</span>
+              {commits.toLocaleString("en-US")} {unit} <span className="dim">this year</span>
             </h2>
             <span className="legend" aria-hidden="true">
               Less
@@ -213,7 +217,7 @@ export default async function Page() {
               More
             </span>
           </div>
-          <Heatmap days={days} end={checkedAt} />
+          <Heatmap days={days} end={checkedAt} unit={unit} levels={contributions?.levels} />
         </section>
 
         <section id="contact" className="section wrap contact" aria-labelledby="contact-h">

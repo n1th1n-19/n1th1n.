@@ -5,7 +5,8 @@ const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "
 const fmt = (d: string) => `${MONTHS[+d.slice(5, 7) - 1]} ${+d.slice(8, 10)}`;
 
 // GitHub's contribution graph. On narrow screens it scrolls, starting at this week.
-export function Heatmap({ days, end }: { days: Record<string, number>; end: string }) {
+// `levels` are GitHub's own quartiles when the data came from the GitHub calendar.
+export function Heatmap({ days, end, unit, levels }: { days: Record<string, number>; end: string; unit: string; levels?: Record<string, number> }) {
   const cols = weeks(end);
   const total = cols.flat().reduce((n, d) => n + (d ? (days[d] ?? 0) : 0), 0);
 
@@ -19,7 +20,7 @@ export function Heatmap({ days, end }: { days: Record<string, number>; end: stri
           ))}
         </div>
         <div className="heat-scroll">
-          <div className="heat-grid" role="img" aria-label={`${total} commits across all projects in the last year`}>
+          <div className="heat-grid" role="img" aria-label={`${total} ${unit} in the last year`}>
             {cols.map((col, i) => {
               const first = col[0]!;
               const prev = cols[i - 1]?.[0];
@@ -31,8 +32,8 @@ export function Heatmap({ days, end }: { days: Record<string, number>; end: stri
                     d ? (
                       <i
                         key={j}
-                        data-l={level(days[d] ?? 0, DAY_STEPS)}
-                        title={`${days[d] ?? "No"} commit${days[d] === 1 ? "" : "s"} on ${fmt(d)}`}
+                        data-l={levels ? (levels[d] ?? 0) : level(days[d] ?? 0, DAY_STEPS)}
+                        title={`${days[d] || "No"} ${days[d] === 1 ? unit.slice(0, -1) : unit} on ${fmt(d)}`}
                       />
                     ) : (
                       <i key={j} className="empty" />
