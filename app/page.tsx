@@ -2,7 +2,8 @@ import type { CSSProperties } from "react";
 import { getBoard } from "@/lib/github";
 import { sumDays, weeks } from "@/lib/activity";
 import { languageColors, spotlight, statusLabel } from "@/lib/projects";
-import { EMAIL, GITHUB, NAME, SITE_URL } from "@/lib/site";
+import { DESCRIPTION, EMAIL, GITHUB, HANDLE, NAME, SITE_URL } from "@/lib/site";
+import { updates } from "@/lib/updates";
 import { Nav } from "@/components/Nav";
 import { Work, type Card } from "@/components/Work";
 import { Heatmap } from "@/components/Heatmap";
@@ -51,7 +52,28 @@ export default async function Page() {
   const ld = {
     "@context": "https://schema.org",
     "@graph": [
-      { "@type": "Person", "@id": `${SITE_URL}/#me`, name: NAME, url: SITE_URL, email: `mailto:${EMAIL}`, sameAs: [GITHUB] },
+      { "@type": "WebSite", "@id": `${SITE_URL}/#site`, url: SITE_URL, name: NAME, description: DESCRIPTION, inLanguage: "en", publisher: { "@id": `${SITE_URL}/#me` } },
+      {
+        "@type": "ProfilePage",
+        "@id": `${SITE_URL}/#page`,
+        url: SITE_URL,
+        name: `${NAME} · Portfolio`,
+        isPartOf: { "@id": `${SITE_URL}/#site` },
+        mainEntity: { "@id": `${SITE_URL}/#me` },
+        dateModified: updates[0].date,
+      },
+      {
+        "@type": "Person",
+        "@id": `${SITE_URL}/#me`,
+        name: NAME,
+        alternateName: HANDLE,
+        url: SITE_URL,
+        image: `${GITHUB}.png`,
+        email: `mailto:${EMAIL}`,
+        description: DESCRIPTION,
+        knowsAbout: ["Android", "Kotlin", "Flutter", "Dart", "Rust", "TypeScript", "VS Code extensions", "Linux", "Browser extensions"],
+        sameAs: [GITHUB],
+      },
       {
         "@type": "ItemList",
         name: `Projects by ${NAME}`,

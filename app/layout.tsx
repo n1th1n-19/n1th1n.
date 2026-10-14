@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Google_Sans_Flex, Google_Sans_Code } from "next/font/google";
-import { DESCRIPTION, GITHUB, NAME, SITE_URL, TITLE } from "@/lib/site";
+import { DESCRIPTION, GITHUB, HANDLE, NAME, SITE_URL, TITLE } from "@/lib/site";
 import { Analytics } from "@vercel/analytics/next";
 import { PointerFX } from "@/components/PointerFX";
 import "./globals.css";
@@ -17,9 +17,12 @@ export const metadata: Metadata = {
   creator: NAME,
   keywords: ["n1th1n", "portfolio", "Android", "Kotlin", "Flutter", "VS Code extension", "Rust", "Linux", "GitHub client", "Daybloom", "Forqen", "RTMON"],
   alternates: { canonical: "/", types: { "application/rss+xml": [{ url: "/feed.xml", title: `${NAME} · Updates` }] } },
-  openGraph: { type: "website", url: "/", siteName: NAME, title: TITLE, description: DESCRIPTION, locale: "en_US" },
+  openGraph: { type: "profile", username: HANDLE, url: "/", siteName: NAME, title: TITLE, description: DESCRIPTION, locale: "en_US" },
   twitter: { card: "summary_large_image", title: TITLE, description: DESCRIPTION },
-  robots: { index: true, follow: true },
+  robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 } },
+  category: "technology",
+  // Set GOOGLE_SITE_VERIFICATION to the token from Search Console to verify ownership.
+  verification: process.env.GOOGLE_SITE_VERIFICATION ? { google: process.env.GOOGLE_SITE_VERIFICATION } : undefined,
 };
 
 export const viewport: Viewport = {
@@ -32,6 +35,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${display.variable} ${mono.variable}`}>
       <body>
+        {/* rel=me ties this site and the GitHub profile together as one identity. React hoists it into <head>. */}
+        <link rel="me" href={GITHUB} />
         {children}
         <PointerFX />
         <Analytics />
