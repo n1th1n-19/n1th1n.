@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Google_Sans_Flex, Google_Sans_Code } from "next/font/google";
 import { DESCRIPTION, GITHUB, NAME, SITE_URL, TITLE } from "@/lib/site";
+import { Analytics } from "@vercel/analytics/next";
 import { PointerFX } from "@/components/PointerFX";
 import "./globals.css";
 
@@ -33,6 +34,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body>
         {children}
         <PointerFX />
+        <Analytics />
       </body>
     </html>
   );
