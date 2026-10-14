@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# n1th1n
 
-## Getting Started
+**Live:** https://n1th1n.daystack.space
 
-First, run the development server:
+Personal portfolio for [n1th1n-19](https://github.com/n1th1n-19): Android apps, VS Code extensions, a native Linux GitHub client and a couple of CLIs.
+
+The page shows eight projects (Daybloom, Forqen, Onion Lens, DARKMARK, ONION, RTMON, HELM, Forge) with their current status, plus a GitHub contribution graph. Stars, last push and latest release come from the GitHub API and refresh hourly.
+
+## Stack
+
+- Next.js 16 (App Router, Cache Components), React 19, TypeScript, Bun
+- Plain CSS, no UI library. Colors follow Apple's dark system palette; filter chips and tonal buttons follow Material 3
+- Fonts: Google Sans Flex (headings), Google Sans Code (labels), system font for body text
+- Motion: CSS keyframes and scroll-driven animations, turned off under `prefers-reduced-motion`
+
+## Run locally
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+bun install
+bun run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+bun run lint    # ESLint
+bun run build   # production build
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Environment variables
 
-## Learn More
+| Variable | Needed | What it does |
+|---|---|---|
+| `GITHUB_TOKEN` | Recommended | Raises the GitHub API limit from 60 to 5,000 requests an hour, and enables the full contribution graph. Without it the graph shows commits to the listed projects only. A read-only fine-grained token from your own account is enough. |
+| `SITE_URL` | Optional | Overrides the public URL used for canonical links, the sitemap and Open Graph tags. Defaults to `https://n1th1n.daystack.space`. |
 
-To learn more about Next.js, take a look at the following resources:
+For local development, put the token in `.env.local` (ignored by git):
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+echo "GITHUB_TOKEN=$(gh auth token)" > .env.local
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Editing content
 
-## Deploy on Vercel
+- **Projects:** [`lib/projects.ts`](lib/projects.ts) holds name, tagline, status, notes and links for every project. Change a project's `status` there when it ships or pauses. `fallback` values are used when GitHub can't be reached.
+- **Icons:** [`public/icons/`](public/icons/) contains one 256px PNG per project.
+- **Hero spotlight:** `spotlight()` at the bottom of `lib/projects.ts` picks the project shown in the "Now building" pill.
+- **Name, email, links:** [`lib/site.ts`](lib/site.ts).
+- **Offline activity data:** [`lib/activity-fallback.json`](lib/activity-fallback.json) holds daily commit counts from the local repos, used when GitHub data is missing (for example, the private Daybloom repo).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Project layout
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+app/
+  page.tsx               the whole page (server component)
+  layout.tsx             fonts, metadata, viewport
+  globals.css            all styles
+  opengraph-image.tsx    share image
+  sitemap.ts, robots.ts, icon.svg
+components/
+  Nav.tsx                glass navbar (desktop) and tab bar (mobile)
+  Work.tsx               project cards and filter chips
+  Heatmap.tsx            contribution graph
+  CountUp.tsx, CopyEmail.tsx, RelativeTime.tsx, AppIcon.tsx, icons.tsx
+lib/
+  github.ts              cached GitHub API calls, never throws
+  projects.ts, site.ts, activity.ts
+```
+
+## Deploy
+
+Built for Vercel. Import the repo, set `GITHUB_TOKEN` in the project's environment variables, and deploy. The home page is prerendered and revalidated every hour.

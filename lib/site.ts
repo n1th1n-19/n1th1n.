@@ -6,9 +6,5 @@ export const TITLE = "n1th1n · Tools for Android, VS Code and Linux";
 export const DESCRIPTION =
   "Android apps, VS Code extensions, a native Linux GitHub client and a couple of CLIs, built by n1th1n. Eight projects, built in the open.";
 
-// Vercel sets VERCEL_PROJECT_PRODUCTION_URL in every deployment; SITE_URL overrides it for a custom domain.
-export const SITE_URL =
-  process.env.SITE_URL ??
-  (process.env.VERCEL_PROJECT_PRODUCTION_URL
-    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-    : "http://localhost:3000");
+// Canonical URL for links, sitemap and Open Graph tags. SITE_URL overrides it (e.g. for a staging domain).
+export const SITE_URL = process.env.SITE_URL ?? "https://n1th1n.daystack.space";
