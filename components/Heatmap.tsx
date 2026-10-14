@@ -33,7 +33,7 @@ export function Heatmap({ days, end, unit, levels }: { days: Record<string, numb
                       <i
                         key={j}
                         data-l={levels ? (levels[d] ?? 0) : level(days[d] ?? 0, DAY_STEPS)}
-                        title={`${days[d] || "No"} ${days[d] === 1 ? unit.slice(0, -1) : unit} on ${fmt(d)}`}
+                        data-tip={`${days[d] || "No"} ${days[d] === 1 ? unit.slice(0, -1) : unit} on ${fmt(d)}`}
                       />
                     ) : (
                       <i key={j} className="empty" />

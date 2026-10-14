@@ -11,6 +11,8 @@ import { CountUp } from "@/components/CountUp";
 import { CopyEmail } from "@/components/CopyEmail";
 import { RelativeTime } from "@/components/RelativeTime";
 import { Chevron } from "@/components/icons";
+import { FlexHeadline } from "@/components/FlexHeadline";
+import { Words } from "@/components/Words";
 
 // Per-icon parallax depth and intro tilt, so the row doesn't move as one block.
 const DEPTH = [40, 70, 25, 60, 35, 80, 30, 55];
@@ -88,9 +90,11 @@ export default async function Page() {
                 <RelativeTime iso={live.pushedAt} prefix="pushed" />
               </span>
             </p>
-            <h1 className="rise" style={{ "--d": "0.3s", "--y": "72px" } as CSSProperties}>
-              I build the tools <span className="dim">I wish I had.</span>
-            </h1>
+            <FlexHeadline
+              className="rise"
+              style={{ "--d": "0.3s", "--y": "72px" } as CSSProperties}
+              lines={[{ text: "I build the tools" }, { text: "I wish I had.", dim: true }]}
+            />
             <p className="sub rise" style={{ "--d": "0.5s" } as CSSProperties}>
               Android apps, VS Code extensions, a Linux GitHub client and a couple of CLIs. {rows.length} projects, {shipped} shipped,
               built in the open.
@@ -107,7 +111,13 @@ export default async function Page() {
           <ul className="icons" aria-label="Projects">
             {rows.map((r, i) => (
               <li key={r.slug} className="par" style={{ "--p": DEPTH[i % DEPTH.length] } as CSSProperties}>
-                <a href="#work" aria-label={r.name} style={{ "--i": i, "--r": `${i % 2 ? -14 : 14}deg` } as CSSProperties} className="pop">
+                <a
+                  href="#work"
+                  aria-label={r.name}
+                  data-tilt="16"
+                  style={{ "--i": i, "--r": `${i % 2 ? -14 : 14}deg` } as CSSProperties}
+                  className="pop"
+                >
                   <AppIcon src={r.icon} size={88} />
                 </a>
               </li>
@@ -135,7 +145,9 @@ export default async function Page() {
           <div className="sec-head">
             <div>
               <p className="eyebrow">01 / Work</p>
-              <h2 id="work-h">Selected work</h2>
+              <h2 id="work-h" className="split">
+                <Words text="Selected work" />
+              </h2>
             </div>
           </div>
           <Work cards={cards} />
@@ -147,13 +159,12 @@ export default async function Page() {
             <h2 id="about-h" className="sr-only">
               About
             </h2>
-            <p className="statement reveal">
-              I&apos;m n1th1n.{" "}
+            <p className="statement">
+              <Words text="I'm n1th1n." />{" "}
               <span className="dim">
-                I write Kotlin for the phone in my pocket, TypeScript for the editor I stare at all day, and Rust for everything in
-                between.
+                <Words text="I write Kotlin for the phone in my pocket, TypeScript for the editor I stare at all day, and Rust for everything in between." start={2} />
               </span>{" "}
-              Small tools, finished properly.
+              <Words text="Small tools, finished properly." start={26} />
             </p>
           </div>
           <div className="about-side reveal">
@@ -181,7 +192,9 @@ export default async function Page() {
 
         <section id="now" className="section wrap" aria-labelledby="now-h">
           <p className="eyebrow">03 / Now</p>
-          <h2 id="now-h">On the bench</h2>
+          <h2 id="now-h" className="split">
+            <Words text="On the bench" />
+          </h2>
           <ul className="nowlist card reveal">
             {rows
               .filter((r) => r.now)
@@ -222,9 +235,12 @@ export default async function Page() {
 
         <section id="contact" className="section wrap contact" aria-labelledby="contact-h">
           <p className="eyebrow">05 / Contact</p>
-          <h2 id="contact-h" className="reveal">
-            Let&apos;s build <span className="dim">something.</span>
-          </h2>
+          <FlexHeadline
+            as="h2"
+            id="contact-h"
+            className="reveal"
+            lines={[{ text: "Let's build" }, { text: "something.", dim: true }]}
+          />
           <div className="email reveal">
             <a href={`mailto:${EMAIL}`}>{EMAIL}</a>
             <CopyEmail email={EMAIL} />

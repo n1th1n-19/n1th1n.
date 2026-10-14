@@ -1,9 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import { Google_Sans_Flex, Google_Sans_Code } from "next/font/google";
 import { DESCRIPTION, GITHUB, NAME, SITE_URL, TITLE } from "@/lib/site";
+import { PointerFX } from "@/components/PointerFX";
 import "./globals.css";
 
-const display = Google_Sans_Flex({ subsets: ["latin"], variable: "--font-gsf", display: "swap" });
+const display = Google_Sans_Flex({ subsets: ["latin"], variable: "--font-gsf", display: "swap", axes: ["GRAD", "ROND"] });
 const mono = Google_Sans_Code({ subsets: ["latin"], variable: "--font-gsc", display: "swap" });
 
 export const metadata: Metadata = {
@@ -29,7 +30,10 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${display.variable} ${mono.variable}`}>
-      <body>{children}</body>
+      <body>
+        {children}
+        <PointerFX />
+      </body>
     </html>
   );
 }

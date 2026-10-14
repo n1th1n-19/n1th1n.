@@ -50,7 +50,7 @@ function Lang({ c }: { c: Card }) {
 
 function Featured({ c, i }: { c: Card; i: number }) {
   return (
-    <article className="fcard card reveal" style={{ "--i": i, viewTransitionName: `p-${c.slug}` } as CSSProperties}>
+    <article className="fcard card reveal" data-tilt="3" style={{ "--i": i, viewTransitionName: `p-${c.slug}` } as CSSProperties}>
       <div className="fcard-top">
         <Badge status={c.status} />
         <span className="label mono">{c.version}</span>
@@ -112,7 +112,7 @@ function Small({ c, i }: { c: Card; i: number }) {
   );
   const style = { "--i": i, viewTransitionName: `p-${c.slug}` } as CSSProperties;
   return c.href ? (
-    <a href={c.href} className="pcard card reveal" style={style}>
+    <a href={c.href} className="pcard card reveal" data-tilt="7" data-lift="-4" style={style}>
       {body}
     </a>
   ) : (
