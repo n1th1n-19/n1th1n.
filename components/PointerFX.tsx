@@ -31,6 +31,8 @@ export function PointerFX() {
     let tilt: HTMLElement | null = null; // [data-tilt] element under the pointer
     let textSize = 20;
     let raf = 0;
+    let down = false;
+    let press = 1; // shrink on click, part of the same transform as the position
 
     const release = (node: HTMLElement | null) => {
       if (node) node.style.transform = "";
@@ -76,7 +78,10 @@ export function PointerFX() {
         cur[k] += (tgt[k] - cur[k]) * t;
         if (Math.abs(tgt[k] - cur[k]) > 0.1) moving = true;
       }
-      el.style.transform = `translate3d(${cur.x - cur.w / 2}px, ${cur.y - cur.h / 2}px, 0)`;
+      press += ((down ? 0.88 : 1) - press) * 0.35;
+      if (Math.abs((down ? 0.88 : 1) - press) > 0.002) moving = true;
+      // Scale must come after the translate, or it would pull the pointer toward the page origin.
+      el.style.transform = `translate3d(${cur.x - cur.w / 2}px, ${cur.y - cur.h / 2}px, 0) scale(${press.toFixed(3)})`;
       el.style.width = `${cur.w}px`;
       el.style.height = `${cur.h}px`;
       el.style.borderRadius = `${cur.r}px`;
@@ -86,12 +91,10 @@ export function PointerFX() {
       if (!raf) raf = requestAnimationFrame(frame);
     };
 
-    const onMove = (e: PointerEvent) => {
-      if (e.pointerType !== "mouse") return;
-      mx = e.clientX;
-      my = e.clientY;
-      el.dataset.visible = "true";
-      const target = e.target as Element;
+    // Works out what the pointer is over. Called on move, and on scroll because the page can
+    // move under a still cursor (anchor links smooth-scroll right after a click).
+    const update = (target: Element | null) => {
+      if (!target) return;
 
       const nextTilt = target.closest<HTMLElement>("[data-tilt]");
       if (nextTilt !== tilt) {
@@ -122,14 +125,28 @@ export function PointerFX() {
       el.dataset.mode = mode;
       kick();
     };
+    const onMove = (e: PointerEvent) => {
+      if (e.pointerType !== "mouse") return;
+      mx = e.clientX;
+      my = e.clientY;
+      el.dataset.visible = "true";
+      update(e.target as Element);
+    };
+    const onScroll = () => update(document.elementFromPoint(mx, my));
     const onLeave = (e: MouseEvent) => {
       if (!e.relatedTarget) el.dataset.visible = "false";
     };
-    const onDown = () => (el.dataset.down = "true");
-    const onUp = () => (el.dataset.down = "false");
+    const onDown = () => {
+      down = true;
+      kick();
+    };
+    const onUp = () => {
+      down = false;
+      kick();
+    };
 
     addEventListener("pointermove", onMove, { passive: true });
-    addEventListener("scroll", kick, { passive: true });
+    addEventListener("scroll", onScroll, { passive: true });
     document.addEventListener("mouseout", onLeave);
     addEventListener("pointerdown", onDown);
     addEventListener("pointerup", onUp);
@@ -139,7 +156,7 @@ export function PointerFX() {
       release(tilt);
       root.classList.remove("fx-pointer");
       removeEventListener("pointermove", onMove);
-      removeEventListener("scroll", kick);
+      removeEventListener("scroll", onScroll);
       document.removeEventListener("mouseout", onLeave);
       removeEventListener("pointerdown", onDown);
       removeEventListener("pointerup", onUp);
