@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   applicationName: NAME,
   authors: [{ name: NAME, url: GITHUB }],
   creator: NAME,
-  keywords: ["n1th1n", "portfolio", "Android", "Kotlin", "Flutter", "VS Code extension", "Rust", "Linux", "GitHub client", "Daybloom", "Forqen", "RTMON"],
+  keywords: ["n1th1n", "portfolio", "Android", "Kotlin", "Flutter", "VS Code extension", "Rust", "Linux", "GitHub client", "Claude Code", "Daybloom", "Forqen", "Tag Team", "RTMON"],
   alternates: { canonical: "/", types: { "application/rss+xml": [{ url: "/feed.xml", title: `${NAME} · Updates` }] } },
   openGraph: { type: "profile", username: HANDLE, url: "/", siteName: NAME, title: TITLE, description: DESCRIPTION, locale: "en_US" },
   twitter: { card: "summary_large_image", title: TITLE, description: DESCRIPTION },

@@ -678,6 +678,11 @@ h1 .dim {
   margin-top: 24px;
 }
 
+/* A lone card on the last row spans the full width instead of sitting on its own */
+.grid > :last-child:nth-child(3n + 1) {
+  grid-column: 1 / -1;
+}
+
 .pcard {
   position: relative;
   display: grid;
@@ -1302,6 +1307,14 @@ a.pcard:active::after {
 /* ---------- Tablet ---------- */
 
 @media (max-width: 1080px) {
+  .grid > :last-child:nth-child(3n + 1) {
+    grid-column: auto;
+  }
+
+  .grid > :last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+
   .news-section {
     grid-template-columns: 1fr;
     gap: 40px;

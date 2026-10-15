@@ -34,6 +34,7 @@ export const languageColors = {
   JavaScript: "#f1e05a",
   TypeScript: "#3178c6",
   Kotlin: "#A97BFF",
+  Python: "#3572A5",
 };
 
 const gh = (repo: string) => `https://github.com/${repo}`;
@@ -70,6 +71,24 @@ export const projects: Project[] = [
     now: "Pre-release. Issue tracker and PR review in progress",
     links: [{ label: "Repository", href: gh("Daystack/Forqen") }],
     fallback: { version: "v0.1.0", pushedAt: "2026-09-19T05:40:26Z", stars: 0 },
+  },
+  {
+    slug: "tag-team",
+    name: "Tag Team",
+    repo: "n1th1n-19/Tag-Team",
+    public: true,
+    tagline: "Your Claude accounts as a tag team, with life bars and one-click switching.",
+    note: "A retro pixel-art dashboard for Claude Code: 5-hour and weekly usage as fighting-game life bars, a GitHub-style token heatmap and one-click TAG ME switching. CLI, Claude Code plugin and VS Code/VSCodium extension, built on claude-swap.",
+    language: "Python",
+    platform: "Claude Code, VSCodium",
+    status: "building",
+    icon: "/icons/tagteam.png",
+    now: "v0.4.1 out: installers, progress bars and opt-in auto-update",
+    links: [
+      { label: "Repository", href: gh("n1th1n-19/Tag-Team") },
+      { label: "Website", href: "https://n1th1n-19.github.io/Tag-Team/" },
+    ],
+    fallback: { version: "v0.4.1", pushedAt: "2026-10-15T14:23:00Z", stars: 0 },
   },
   {
     slug: "onion-lens",

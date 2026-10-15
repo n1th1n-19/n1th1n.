@@ -29,6 +29,15 @@ const mail = (subject: string, body: string) =>
 export const updates: Update[] = [
   {
     date: "2026-10-15",
+    kind: "launch",
+    project: "tag-team",
+    title: "Introducing Tag Team Wrestling",
+    body: "Run your work and personal Claude accounts as a tag team: life bars for each account's 5-hour and weekly limits, a GitHub-style token heatmap and one-click TAG ME switching. CLI, Claude Code plugin and VS Code/VSCodium extension. Already at 0.4.1, with installers and opt-in auto-update.",
+    href: "https://n1th1n-19.github.io/Tag-Team/#watch",
+    cta: "Watch the demo",
+  },
+  {
+    date: "2026-10-15",
     kind: "milestone",
     project: "daybloom",
     title: "Daybloom is in closed testing",

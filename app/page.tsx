@@ -71,7 +71,7 @@ export default async function Page() {
         image: `${GITHUB}.png`,
         email: `mailto:${EMAIL}`,
         description: DESCRIPTION,
-        knowsAbout: ["Android", "Kotlin", "Flutter", "Dart", "Rust", "TypeScript", "VS Code extensions", "Linux", "Browser extensions"],
+        knowsAbout: ["Android", "Kotlin", "Flutter", "Dart", "Rust", "Python", "TypeScript", "VS Code extensions", "Claude Code", "Linux", "Browser extensions"],
         sameAs: [GITHUB],
       },
       {
@@ -119,7 +119,7 @@ export default async function Page() {
               lines={[{ text: "I build the tools" }, { text: "I wish I had.", dim: true }]}
             />
             <p className="sub rise" style={{ "--d": "0.5s" } as CSSProperties}>
-              Android apps, VS Code extensions, a Linux GitHub client and a couple of CLIs. {rows.length} projects, {shipped} shipped,
+              Android apps, VS Code extensions, a Linux GitHub client, Claude Code tools and a couple of CLIs. {rows.length} projects, {shipped} shipped,
               built in the open.
             </p>
             <div className="ctas rise" style={{ "--d": "0.65s", "--y": "40px" } as CSSProperties}>
@@ -194,11 +194,11 @@ export default async function Page() {
             <dl className="glist">
               <div>
                 <dt>Languages</dt>
-                <dd>Kotlin, Rust, TypeScript, Dart, JS</dd>
+                <dd>Kotlin, Rust, Python, TypeScript, Dart, JS</dd>
               </div>
               <div>
                 <dt>Platforms</dt>
-                <dd>Android, VSCodium, browsers, Linux</dd>
+                <dd>Android, VSCodium, Claude Code, browsers, Linux</dd>
               </div>
               <div>
                 <dt>Tools</dt>
