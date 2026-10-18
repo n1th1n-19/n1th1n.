@@ -107,7 +107,7 @@ export const projects: Project[] = [
     icon: "/icons/stillread.png",
     now: "Reading features done; launch checklist next",
     links: [{ label: "Website", href: "https://stillread.daystack.space" }],
-    fallback: { version: "alpha", pushedAt: "2026-10-18T06:27:28Z", stars: 0 },
+    fallback: { version: "", pushedAt: "2026-10-18T06:27:28Z", stars: 0 },
   },
   {
     slug: "onion-lens",

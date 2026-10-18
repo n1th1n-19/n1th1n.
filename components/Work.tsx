@@ -53,7 +53,7 @@ function Featured({ c, i }: { c: Card; i: number }) {
     <article className="fcard card reveal" data-tilt="3" style={{ "--i": i, viewTransitionName: `p-${c.slug}` } as CSSProperties}>
       <div className="fcard-top">
         <Badge status={c.status} />
-        <span className="label mono">{c.version}</span>
+        {c.version && <span className="label mono">{c.version}</span>}
       </div>
       <div className="fcard-id">
         <AppIcon src={c.icon} size={104} />
@@ -96,7 +96,7 @@ function Small({ c, i }: { c: Card; i: number }) {
   const body = (
     <>
       <AppIcon src={c.icon} size={56} className="pc-icon" />
-      <span className="label mono pc-ver">{c.version}</span>
+      {c.version && <span className="label mono pc-ver">{c.version}</span>}
       <h3 className="pc-name">{c.name}</h3>
       <p className="pc-tag">{c.tagline}</p>
       <span className="pc-status">

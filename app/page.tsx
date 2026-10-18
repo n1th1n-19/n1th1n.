@@ -85,7 +85,7 @@ export default async function Page() {
             description: r.tagline,
             operatingSystem: r.platform,
             applicationCategory: "DeveloperApplication",
-            softwareVersion: r.version.replace(/^v/, ""),
+            ...(r.version ? { softwareVersion: r.version.replace(/^v/, "") } : {}),
             author: { "@id": `${SITE_URL}/#me` },
             ...(r.public ? { url: `https://github.com/${r.repo}` } : {}),
           },
@@ -227,7 +227,7 @@ export default async function Page() {
                   <AppIcon src={r.icon} size={52} />
                   <div className="now-text">
                     <p>
-                      <b>{r.name}</b> <span className="label mono">{r.version}</span>
+                      <b>{r.name}</b> {r.version && <span className="label mono">{r.version}</span>}
                     </p>
                     <p className="now-note">{r.now}</p>
                   </div>
