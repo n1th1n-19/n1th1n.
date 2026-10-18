@@ -1,9 +1,8 @@
 import type { CSSProperties } from "react";
 import { getBoard } from "@/lib/github";
 import { sumDays, weeks } from "@/lib/activity";
-import { languageColors, spotlight, statusLabel } from "@/lib/projects";
+import { spotlight, statusLabel } from "@/lib/projects";
 import { DESCRIPTION, EMAIL, GITHUB, HANDLE, NAME, SITE_URL } from "@/lib/site";
-import { updates } from "@/lib/updates";
 import { Nav } from "@/components/Nav";
 import { Work, type Card } from "@/components/Work";
 import { Heatmap } from "@/components/Heatmap";
@@ -20,7 +19,7 @@ import { News } from "@/components/News";
 const DEPTH = [40, 70, 25, 60, 35, 80, 30, 55];
 
 export default async function Page() {
-  const { rows, checkedAt, contributions } = await getBoard();
+  const { rows, checkedAt, news, contributions } = await getBoard();
   const live = spotlight(rows);
   // Whole GitHub profile when a token is set, otherwise commits to the projects listed here.
   const days = contributions?.days ?? sumDays(rows.map((r) => r.days));
@@ -39,7 +38,7 @@ export default async function Page() {
     tagline: r.tagline,
     note: r.note,
     language: r.language,
-    langColor: languageColors[r.language],
+    langColor: r.langColor,
     platform: r.platform,
     status: r.status,
     version: r.version,
@@ -60,7 +59,7 @@ export default async function Page() {
         name: `${NAME} · Portfolio`,
         isPartOf: { "@id": `${SITE_URL}/#site` },
         mainEntity: { "@id": `${SITE_URL}/#me` },
-        dateModified: updates[0].date,
+        dateModified: news[0]?.date,
       },
       {
         "@type": "Person",
@@ -220,7 +219,9 @@ export default async function Page() {
           </h2>
           <ul className="nowlist card reveal">
             {rows
-              .filter((r) => r.now)
+              // Everything not shipped, in-progress first; notes come from GitHub unless written by hand.
+              .filter((r) => r.status !== "shipped")
+              .sort((a, b) => Number(a.status === "paused") - Number(b.status === "paused"))
               .map((r) => (
                 <li key={r.slug}>
                   <AppIcon src={r.icon} size={52} />
@@ -250,7 +251,7 @@ export default async function Page() {
               Follow via RSS <Chevron />
             </a>
           </header>
-          <News />
+          <News items={news} who={rows} />
         </section>
 
         <section id="activity" className="section section-tight wrap" aria-labelledby="activity-h">

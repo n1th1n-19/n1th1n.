@@ -1,7 +1,11 @@
-// The one file to edit when a project changes.
-// Live GitHub data (stars, last push, latest release) overrides `fallback` when the API answers.
+// Curated projects, in display order (first three with `featured` get the big cards).
+// Most of this is automatic now (lib/github.ts):
+// - status: a repo topic `status-<value>` wins; otherwise it's derived from releases and activity;
+//   `status` here is only used when GitHub can't tell (no releases yet, or the repo is unreachable).
+// - version, stars, last push, release news and the Now note come from GitHub.
+// - Repos with the topic `portfolio` that aren't listed here are added automatically.
 
-export type Status = "building" | "rc" | "shipped" | "paused";
+export type Status = "building" | "prerelease" | "rc" | "shipped" | "paused";
 
 export type Project = {
   slug: string;
@@ -10,7 +14,7 @@ export type Project = {
   public: boolean;
   tagline: string;
   note: string;
-  language: keyof typeof languageColors;
+  language: string;
   platform: string;
   status: Status;
   icon: string;
@@ -22,6 +26,7 @@ export type Project = {
 
 export const statusLabel: Record<Status, string> = {
   building: "In development",
+  prerelease: "Pre-release",
   rc: "Release candidate",
   shipped: "Shipped",
   paused: "Paused",
@@ -40,6 +45,24 @@ export const languageColors = {
 const gh = (repo: string) => `https://github.com/${repo}`;
 
 export const projects: Project[] = [
+  {
+    slug: "tag-team",
+    name: "Tag Team",
+    repo: "n1th1n-19/Tag-Team",
+    public: true,
+    tagline: "Your Claude accounts as a tag team, with life bars and one-click switching.",
+    note: "A retro pixel-art dashboard for Claude Code: 5-hour and weekly usage as fighting-game life bars, a GitHub-style token heatmap and one-click TAG ME switching. CLI, Claude Code plugin and VS Code/VSCodium extension, built on claude-swap.",
+    language: "Python",
+    platform: "Claude Code, VSCodium",
+    status: "shipped",
+    icon: "/icons/tagteam.png",
+    featured: { stack: "Python, Claude Code plugin" },
+    links: [
+      { label: "Repository", href: gh("n1th1n-19/Tag-Team") },
+      { label: "Website", href: "https://n1th1n-19.github.io/Tag-Team/" },
+    ],
+    fallback: { version: "v0.4.6", pushedAt: "2026-10-15T14:23:00Z", stars: 0 },
+  },
   {
     slug: "daybloom",
     name: "Daybloom",
@@ -68,27 +91,23 @@ export const projects: Project[] = [
     status: "building",
     icon: "/icons/forqen.png",
     featured: { stack: "Rust, Meson, snap" },
-    now: "Pre-release. Issue tracker and PR review in progress",
     links: [{ label: "Repository", href: gh("Daystack/Forqen") }],
     fallback: { version: "v0.1.0", pushedAt: "2026-09-19T05:40:26Z", stars: 0 },
   },
   {
-    slug: "tag-team",
-    name: "Tag Team",
-    repo: "n1th1n-19/Tag-Team",
-    public: true,
-    tagline: "Your Claude accounts as a tag team, with life bars and one-click switching.",
-    note: "A retro pixel-art dashboard for Claude Code: 5-hour and weekly usage as fighting-game life bars, a GitHub-style token heatmap and one-click TAG ME switching. CLI, Claude Code plugin and VS Code/VSCodium extension, built on claude-swap.",
-    language: "Python",
-    platform: "Claude Code, VSCodium",
-    status: "building",
-    icon: "/icons/tagteam.png",
-    now: "v0.4.1 out: installers, progress bars and opt-in auto-update",
-    links: [
-      { label: "Repository", href: gh("n1th1n-19/Tag-Team") },
-      { label: "Website", href: "https://n1th1n-19.github.io/Tag-Team/" },
-    ],
-    fallback: { version: "v0.4.1", pushedAt: "2026-10-15T14:23:00Z", stars: 0 },
+    slug: "stillread",
+    name: "Stillread",
+    repo: "n1th1n-19/Stillread",
+    public: false,
+    tagline: "A calm, private RSS reader. No ads, no algorithm, no tracking.",
+    note: "Follow blogs, news sites and video channels in one place and read them in a clean reader view. Passkey sign-in, folders, OPML, search and a mobile-first PWA. Next.js on Vercel, Hono API and worker on a self-hosted server.",
+    language: "TypeScript",
+    platform: "Web, PWA",
+    status: "prerelease",
+    icon: "/icons/stillread.png",
+    now: "Reading features done; launch checklist next",
+    links: [{ label: "Website", href: "https://stillread.daystack.space" }],
+    fallback: { version: "alpha", pushedAt: "2026-10-18T06:27:28Z", stars: 0 },
   },
   {
     slug: "onion-lens",
@@ -157,7 +176,6 @@ export const projects: Project[] = [
     platform: "Android + desktop",
     status: "paused",
     icon: "/icons/helm.png",
-    now: "Parked after 133 commits in two days",
     links: [{ label: "Repository", href: gh("n1th1n-19/HELM") }],
     fallback: { version: "v0.4.8", pushedAt: "2026-06-03T16:15:45Z", stars: 0 },
   },
@@ -172,7 +190,6 @@ export const projects: Project[] = [
     platform: "CLI",
     status: "paused",
     icon: "/icons/forge.png",
-    now: "Parked after v0.2.0 added more tool categories",
     links: [{ label: "Repository", href: gh("n1th1n-19/Forge") }],
     fallback: { version: "v0.2.0", pushedAt: "2026-06-23T19:34:19Z", stars: 0 },
   },
@@ -184,6 +201,6 @@ type Live = Pick<Project, "status" | "name"> & { pushedAt: string };
 export function spotlight<T extends Live>(rows: T[]): T {
   // TODO(n1th1n-19): your call. Default: the most recently pushed project that is
   // still in motion. Alternatives: always pin one slug, or prefer release candidates.
-  const moving = rows.filter((r) => r.status === "building" || r.status === "rc");
+  const moving = rows.filter((r) => r.status === "building" || r.status === "prerelease" || r.status === "rc");
   return [...(moving.length ? moving : rows)].sort((a, b) => b.pushedAt.localeCompare(a.pushedAt))[0];
 }

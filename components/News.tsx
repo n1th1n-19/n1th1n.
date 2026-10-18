@@ -1,13 +1,14 @@
 import type { CSSProperties } from "react";
-import { projects } from "@/lib/projects";
-import { formatDate, kindLabel, updates, type Update } from "@/lib/updates";
+import { formatDate, kindLabel, type Update } from "@/lib/updates";
 import { AppIcon } from "./AppIcon";
 import { Chevron } from "./icons";
 
 const SHOWN = 6;
 
-function Item({ u, i }: { u: Update; i: number }) {
-  const p = projects.find((x) => x.slug === u.project);
+type Who = { slug: string; name: string; icon: string };
+
+function Item({ u, i, who }: { u: Update; i: number; who: Who[] }) {
+  const p = who.find((x) => x.slug === u.project);
   return (
     <li className={`news-item is-${u.kind} reveal`} style={{ "--i": i % 3 } as CSSProperties}>
       <time dateTime={u.date}>{formatDate(u.date)}</time>
@@ -33,13 +34,13 @@ function Item({ u, i }: { u: Update; i: number }) {
   );
 }
 
-export function News() {
-  const older = updates.slice(SHOWN);
+export function News({ items, who }: { items: Update[]; who: Who[] }) {
+  const older = items.slice(SHOWN);
   return (
     <div className="news">
       <ol className="timeline">
-        {updates.slice(0, SHOWN).map((u, i) => (
-          <Item key={u.date + u.title} u={u} i={i} />
+        {items.slice(0, SHOWN).map((u, i) => (
+          <Item key={u.date + u.title} u={u} i={i} who={who} />
         ))}
       </ol>
       {older.length > 0 && (
@@ -49,7 +50,7 @@ export function News() {
           </summary>
           <ol className="timeline">
             {older.map((u, i) => (
-              <Item key={u.date + u.title} u={u} i={i} />
+              <Item key={u.date + u.title} u={u} i={i} who={who} />
             ))}
           </ol>
         </details>

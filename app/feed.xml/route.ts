@@ -1,11 +1,12 @@
-import { updates } from "@/lib/updates";
+import { getBoard } from "@/lib/github";
 import { NAME, SITE_URL } from "@/lib/site";
 
 const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 const date = (d: string) => new Date(`${d}T00:00:00Z`).toUTCString();
 
-// RSS 2.0 feed of lib/updates.ts, so people can follow along in a feed reader.
-export function GET() {
+// RSS 2.0 feed of the News section (hand-written updates plus GitHub releases).
+export async function GET() {
+  const { news: updates } = await getBoard();
   const items = updates
     .map(
       (u) => `    <item>

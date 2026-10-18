@@ -4,7 +4,7 @@
 
 Personal portfolio for [n1th1n-19](https://github.com/n1th1n-19): Android apps, VS Code extensions, a native Linux GitHub client and a couple of CLIs.
 
-The page shows eight projects (Daybloom, Forqen, Onion Lens, DARKMARK, ONION, RTMON, HELM, Forge) with their current status, plus a GitHub contribution graph. Stars, last push and latest release come from the GitHub API and refresh hourly.
+The page shows ten projects (Tag Team, Daybloom, Forqen, Stillread, Onion Lens, DARKMARK, ONION, RTMON, HELM, Forge) with their current status, plus a GitHub contribution graph. Stars, last push and latest release come from the GitHub API and refresh hourly.
 
 ## Stack
 
@@ -40,14 +40,28 @@ For local development, put the token in `.env.local` (ignored by git):
 echo "GITHUB_TOKEN=$(gh auth token)" > .env.local
 ```
 
+## What updates itself
+
+Data is fetched from GitHub on the server and refreshed every hour, without a redeploy.
+
+| What | Source |
+|---|---|
+| **Status** | A repo topic wins: `status-shipped`, `status-prerelease`, `status-rc`, `status-building` or `status-paused` (set it in the repo's About settings). Otherwise: archived = Paused; no push in 60 days = Shipped if it reached 1.0, else Paused; latest release is a pre-release = Pre-release; any release = Shipped. If GitHub can't tell (no releases yet), `status` in `lib/projects.ts` is used. |
+| **Version, stars, last push** | Latest GitHub release and repo data |
+| **News** | Every GitHub release (newest per project per day, last 12 months) becomes a News item and RSS entry, summarised from the release notes. Hand-written entries in `lib/updates.ts` are merged in and replace the automatic one for the same release. |
+| **Now list** | Every project that isn't shipped. Note: the hand-written `now`, else the latest commit subject (public repos), else "On hold since <month>" when paused. |
+| **New projects** | Any repo with the topic `portfolio` that isn't in `lib/projects.ts` is added automatically. Put a 256px icon at `.github/portfolio-icon.png` in that repo, otherwise the owner avatar is used. |
+| **Hero pill** | The most recently pushed project that is still in progress (`spotlight()` in `lib/projects.ts`). |
+
+Private repos are read only with `GITHUB_TOKEN`, and their commit messages and release notes are never published.
+
 ## Editing content
 
-- **Projects:** [`lib/projects.ts`](lib/projects.ts) holds name, tagline, status, notes and links for every project. Change a project's `status` there when it ships or pauses. `fallback` values are used when GitHub can't be reached.
-- **Icons:** [`public/icons/`](public/icons/) contains one 256px PNG per project.
-- **News:** [`lib/updates.ts`](lib/updates.ts) holds the updates timeline, newest first. Add an entry at the top and push; the page and the RSS feed at `/feed.xml` both use it.
-- **Hero spotlight:** `spotlight()` at the bottom of `lib/projects.ts` picks the project shown in the "Now building" pill.
+- **Projects:** [`lib/projects.ts`](lib/projects.ts) sets display order, icon, tagline, notes and links. The first entries with `featured` get the large cards.
+- **Icons:** [`public/icons/`](public/icons/) contains one 256px PNG per curated project.
+- **News:** [`lib/updates.ts`](lib/updates.ts) holds hand-written milestones and launches, newest first.
 - **Name, email, links:** [`lib/site.ts`](lib/site.ts).
-- **Offline activity data:** [`lib/activity-fallback.json`](lib/activity-fallback.json) holds daily commit counts from the local repos, used when GitHub data is missing (for example, the private Daybloom repo).
+- **Offline activity data:** [`lib/activity-fallback.json`](lib/activity-fallback.json) holds daily commit counts from the local repos, used when GitHub data is missing.
 
 ## Project layout
 

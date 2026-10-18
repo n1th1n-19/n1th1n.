@@ -25,7 +25,7 @@ export type Card = {
 
 const FILTERS: { key: string; label: string; match: (s: Status) => boolean }[] = [
   { key: "all", label: "All", match: () => true },
-  { key: "motion", label: "In motion", match: (s) => s === "building" || s === "rc" },
+  { key: "motion", label: "In motion", match: (s) => s === "building" || s === "prerelease" || s === "rc" },
   { key: "shipped", label: "Shipped", match: (s) => s === "shipped" },
   { key: "paused", label: "Paused", match: (s) => s === "paused" },
 ];
@@ -67,7 +67,7 @@ function Featured({ c, i }: { c: Card; i: number }) {
       <dl className="facts">
         <div>
           <dt>Status</dt>
-          <dd>{c.status === "building" ? "Pre-release" : statusLabel[c.status]}</dd>
+          <dd>{statusLabel[c.status]}</dd>
         </div>
         <div>
           <dt>Stack</dt>
