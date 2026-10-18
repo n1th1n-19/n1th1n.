@@ -1,4 +1,6 @@
-// Curated projects, in display order (first three with `featured` get the big cards).
+// Curated projects. Display order is automatic (ranked by recent GitHub news and activity in
+// lib/github.ts); the top three of whatever is shown get the big cards. `featured.stack` is the
+// "Stack" line on those cards.
 // Most of this is automatic now (lib/github.ts):
 // - status: a repo topic `status-<value>` wins; otherwise it's derived from releases and activity;
 //   `status` here is only used when GitHub can't tell (no releases yet, or the repo is unreachable).
@@ -106,6 +108,7 @@ export const projects: Project[] = [
     status: "prerelease",
     icon: "/icons/stillread.png",
     now: "Reading features done; launch checklist next",
+    featured: { stack: "Next.js, Hono, Postgres" },
     links: [{ label: "Website", href: "https://stillread.daystack.space" }],
     fallback: { version: "", pushedAt: "2026-10-18T06:27:28Z", stars: 0 },
   },

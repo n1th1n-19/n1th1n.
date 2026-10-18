@@ -71,7 +71,7 @@ function Featured({ c, i }: { c: Card; i: number }) {
         </div>
         <div>
           <dt>Stack</dt>
-          <dd>{c.stack}</dd>
+          <dd>{c.stack ?? c.platform}</dd>
         </div>
         <div>
           <dt>Last push</dt>
@@ -126,8 +126,9 @@ export function Work({ cards }: { cards: Card[] }) {
   const [filter, setFilter] = useState("all");
   const match = FILTERS.find((f) => f.key === filter)!.match;
   const shown = cards.filter((c) => match(c.status));
-  const featured = shown.filter((c) => c.stack);
-  const rest = shown.filter((c) => !c.stack);
+  // Cards arrive ranked; the top three of the current filter get the big cards.
+  const featured = shown.slice(0, 3);
+  const rest = shown.slice(3);
 
   function pick(key: string) {
     const go = () => setFilter(key);

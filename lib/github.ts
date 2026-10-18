@@ -217,7 +217,15 @@ export async function getBoard() {
     }),
   );
 
-  return { rows, checkedAt, news: mergeNews(rows, now), contributions: await pending };
+  // Ranking: the most recent news for a project (release, milestone, launch) counts in full;
+  // plain commits count as if a week older, so shipping lifts a project more than tinkering.
+  const news = mergeNews(rows, now);
+  const latestNews = new Map<string, number>();
+  for (const u of news) if (u.project && !latestNews.has(u.project)) latestNews.set(u.project, Date.parse(u.date));
+  const score = (r: { slug: string; pushedAt: string }) => Math.max(latestNews.get(r.slug) ?? 0, Date.parse(r.pushedAt) - 7 * DAY);
+  rows.sort((a, b) => score(b) - score(a));
+
+  return { rows, checkedAt, news, contributions: await pending };
 }
 
 export type Row = Awaited<ReturnType<typeof getBoard>>["rows"][number];
